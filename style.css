@@ -5,10 +5,7 @@
   box-sizing: border-box;
   font-family: 'Poppins', sans-serif;
 }
-::selection{
-  color: #fff;
-  background:#56baed;
-}
+
 body{
   background-image: url(site.png);    
   background-size: cover;
@@ -86,7 +83,7 @@ body{
   font-weight: 500;
   padding: 10px 0;
   border: none;
-  background: linear-gradient(to right, #460507, #bd0d0d);;
+  background: linear-gradient(to right, #460507, #bd0d0d);
   border-radius: 5px;
   color: #fff;
   outline: none;
@@ -118,6 +115,185 @@ body{
   background: #3043ec;
 }
 
+
+/* SETTINGS ICON*/
+.settings-btn {
+  position: absolute;
+  top: 15px; 
+  right: -20px; 
+  background: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 35px;
+  color: #ffffff; 
+}
+
+/* SETTINGS POPUP */
+.settings-popup {
+  position: absolute;
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: rgba(0, 0, 0, 0);
+  padding: 250px;
+  border-radius: 5px;
+ 
+}
+
+.settings-content {
+  background-color: #00000000;
+  color: #ffff;
+  width: 900px;
+  padding: 10; 
+  border-radius: 5px;
+  font-size: 60px;
+  text-align: center;
+  margin-top: -250px; 
+  margin-left: 10px; 
+}
+
+
+.settings-content .forfeit-btn{
+  width: 20%; 
+  margin-left: 20px;
+  font-size: 20px;
+  font-weight: 500;
+  padding: 10px 0;
+  border: none;
+  border-radius: 5px;
+  color: #fff;
+  outline: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background: linear-gradient(to right, #460507, #bd0d0d);
+  
+  
+
+}
+.settings-content .go-home-btn {
+  width: 20%; 
+  margin-right:25px;
+  font-size: 20px;
+  font-weight: 500;
+  padding: 10px 0;
+  border: none;
+  border-radius: 5px;
+  color: #fff;
+  outline: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background: linear-gradient(to right, #050335, #2220cf);
+}
+
+
+.settings-content .forfeit-btn:hover{
+  transform: scale(0.96);
+  background: #d32a2a;
+}
+.settings-content .go-home-btn:hover {
+  transform: scale(0.96);
+  background: #3043ec;
+}
+
+.close-btn {
+  position: absolute;
+  top: 250px; 
+  right: calc(50% - 22px); 
+  width: 44px; 
+  height: 44px; 
+  cursor: pointer;
+}
+.close-btn:hover {
+  transform: scale(0.9);
+  
+}
+
+
+.settings-popup.show {
+  display: block;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.5);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  
+}
+.popup {
+  position: fixed; 
+  top: 45%; 
+  left: 50%; 
+  transform: translate(-50%, -50%);
+  z-index: 9999; 
+  margin: 0;
+  padding: 100px;
+  background: #ffffff00;
+  border-radius: 5px;
+  width: 200%;
+  height: 90%; 
+  overflow: none; 
+  font-size: 49px;
+  color: #fff;
+  text-align: center;
+}
+
+.popup .start-btn {
+  margin-top: 70px;
+  padding: 10px 90px; 
+  background: linear-gradient(to right, #214222, #37943c);
+  color: white; 
+  font-size: 20px; 
+  border: none; 
+  border-radius: 5px; 
+  cursor: pointer; 
+  margin-left: auto;
+  margin-right: auto; 
+}
+.popup .start-btn:hover {
+  transform: scale(0.96);
+  background: #6dd17e;
+}
+
+
+.score-display {
+  display: flex; 
+  justify-content: space-between;
+  align-items: center; 
+  position: absolute;
+  top: -6em; 
+  left: -50%; 
+  right: -50%; 
+  color: #fff;
+}
+
+
+.player-score {
+  font-size: 25px; 
+}
+
+
+#playerXScore,
+#playerOScore {
+  font-size: 25px; 
+  color: #56baed; 
+}
+
+.red-icon {
+  color: red;
+}
+
+.blue-icon {
+  color: blue;
+}
 
 
 .play-board{
@@ -238,8 +414,8 @@ body{
   transform: translate(-50%, -50%) scale(1);
 }
 .result-box .won-text{              
-  font-size: 30px;
-  font-weight: 500;
+  font-size: 70px;
+  font-weight: 700;
   color:#fff;
   display: flex;
   justify-content: center;
