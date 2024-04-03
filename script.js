@@ -9,6 +9,17 @@ allBox = document.querySelectorAll("section span"),
 resultBox = document.querySelector(".result-box"),
 wonText = resultBox.querySelector(".won-text"),
 replayBtn = resultBox.querySelector("button");
+playArea = document.querySelector(".play-area"); 
+playerXScoreDisplay = document.getElementById("playerXScore"),
+playerOScoreDisplay = document.getElementById("playerOScore");
+
+let playerXIcon = "fas fa-times",
+    playerOIcon = "far fa-circle",
+    playerSign = "X",
+    runBot = true,
+    playerXScore = 0,
+    playerOScore = 0;
+
 
 window.onload = ()=>{
     // make sure all the boxes in the board are clickable
@@ -17,19 +28,43 @@ window.onload = ()=>{
     }
 }
 
-const boxes = document.querySelectorAll('.play-area section span');
-boxes.forEach(box => {
-    box.addEventListener('click', () => {
-        if (!box.textContent.trim()) {
-            box.classList.toggle('x');
-            box.classList.toggle('o');
-            box.textContent = box.classList.contains('x') ? 'X' : 'O';
-        }
+document.addEventListener('DOMContentLoaded', function() {
+    const startButtons = document.querySelectorAll('.popup .start-btn');
+    
+    startButtons.forEach(function(button) {
+      button.addEventListener('click', function(event) {
+        event.preventDefault(); 
+        const popup = this.closest('.popup');
+        popup.style.display = 'none'; 
+      });
     });
-});
+  });
+  
+
+//settings popup
+function toggleSettingsPopup() {
+    const settingsPopup = document.getElementById("settingsPopup");
+    settingsPopup.classList.toggle("show");
+  }
 
 
+  function forfeitGame() {
+    resultBox.classList.add("show");
+    wonText.textContent = "YOU FORFEITED!";
 
+    toggleSettingsPopup();
+    playBoard.style.display = "none";
+    selectBox.style.display = "none";
+    image.style.display = "none";
+    footer.style.display = "none";
+}
+function goHome() {
+    window.location.href = 'index.html'; 
+
+    
+    toggleSettingsPopup();
+    playArea.style.display = "none";
+}
 
 selectBtnX.onclick = ()=>{
     image.classList.add("hidden");
@@ -43,123 +78,133 @@ selectBtnO.onclick = ()=>{
     playBoard.classList.add("show");
     players.setAttribute("class", "players active player");
 }
+//???????
+let playerMoved = false;
+let playerTurn = true;
 
 
-
-let playerXIcon = "fas fa-times", playerOIcon = "far fa-circle", playerSign = "X", runBot = true;
-
-function updatePlayerTurn(player) {
-    const xTurn = document.querySelector('.Xturn');
-    const oTurn = document.querySelector('.Oturn');
-
-    if (player === 'X') {
-        xTurn.style.display = 'inline-block';
-        oTurn.style.display = 'none';
-    } else {
-        xTurn.style.display = 'none';
-        oTurn.style.display = 'inline-block';
-    }
-}
-// user interaction with the board
-function clickedBox(element){
-    // console.log("Clicked")
-    if(players.classList.contains("player")){
-        playerSign = "O";
-        element.innerHTML = `<i class="${playerOIcon}"></i>`;
-        players.classList.remove("active");
-        element.setAttribute("id", playerSign);
-    }
-    else{
-        element.innerHTML = `<i class="${playerXIcon}"></i>`;
-        element.setAttribute("id", playerSign);
-        players.classList.add("active");
-    }
-    selectWinner();
-    element.style.pointerEvents = "none";
-    playBoard.style.pointerEvents = "none";
-
-    // buffer time to pretend that the AI's thinking
-    let randomTimeDelay = ((Math.random() * 1000) + 200).toFixed();
-    setTimeout(()=>{
-        bot(runBot);
-    }, randomTimeDelay);
-    console.log(playBoard);
-
-}
-  
-// computer interaction with the board
-function bot(){
-    let array = [];
-    if(runBot){
-        playerSign = "O";
-        // find the remaining boxes that has not been marked
-        for (let i = 0; i < allBox.length; i++) {
-            if(allBox[i].childElementCount == 0){
-                array.push(i);
-            }
+function clickedBox(element) {
+    if (playerTurn && !element.innerHTML) {
+        if (players.classList.contains("player")) {
+            playerSign = "O";
+            element.innerHTML = `<i class="${playerOIcon}"></i>`;
+            players.classList.remove("active");
+            element.setAttribute("id", playerSign);
+            element.querySelector("i").classList.add("blue-icon"); 
+        } else {
+            element.innerHTML = `<i class="${playerXIcon}"></i>`;
+            element.setAttribute("id", playerSign);
+            players.classList.add("active");
+              element.querySelector("i").classList.add("red-icon"); 
         }
-        // get random box from remaining tiles
-        let randomBox = array[Math.floor(Math.random() * array.length)];
-        if(array.length > 0){
-            if(players.classList.contains("player")){ 
-                playerSign = "X";
-                allBox[randomBox].innerHTML = `<i class="${playerXIcon}"></i>`;
-                allBox[randomBox].setAttribute("id", playerSign);
-                players.classList.add("active"); 
-            }
-            else{
-                allBox[randomBox].innerHTML = `<i class="${playerOIcon}"></i>`;
-                players.classList.remove("active");
-                allBox[randomBox].setAttribute("id", playerSign);
-            }
-            selectWinner();
-        }
-        allBox[randomBox].style.pointerEvents = "none";
-        playBoard.style.pointerEvents = "auto";
-        playerSign = "X";        
+        selectWinner();
+        element.style.pointerEvents = "none";
+        playBoard.style.pointerEvents = "none";
+        playerTurn = false; 
+
+        // buffer time to pretend that the AI's thinking
+        let randomTimeDelay = ((Math.random() * 1000) + 200).toFixed();
+        setTimeout(() => {
+            bot(runBot);
+        }, randomTimeDelay);
     }
 }
-// get the sign of a certain box
-function getIdVal(classname){
+
+function bot() {
+    if (!playerTurn) { 
+        let array = [];
+        if (runBot) {
+            playerSign = "O";
+    
+            for (let i = 0; i < allBox.length; i++) {
+                if (allBox[i].childElementCount == 0) {
+                    array.push(i);
+                }
+            }
+            
+            let randomBox = array[Math.floor(Math.random() * array.length)];
+            if (array.length > 0) {
+                if (players.classList.contains("player")) {
+                    playerSign = "X"; 
+                    allBox[randomBox].innerHTML = `<i class="${playerXIcon}"></i>`;
+                    allBox[randomBox].setAttribute("id", playerSign);
+                    players.classList.add("active");
+                    allBox[randomBox].querySelector("i").classList.add("red-icon"); 
+                } else {
+                    allBox[randomBox].innerHTML = `<i class="${playerOIcon}"></i>`;
+                    players.classList.remove("active");
+                    allBox[randomBox].setAttribute("id", playerSign);
+                    allBox[randomBox].querySelector("i").classList.add("blue-icon"); 
+                }
+                selectWinner(); 
+            }
+            allBox[randomBox].style.pointerEvents = "none"; 
+            playBoard.style.pointerEvents = "auto";
+            playerSign = "X";
+        }
+        playerTurn = true; 
+    }
+}
+
+function getIdVal(classname) {
     return document.querySelector(".box" + classname).id;
 }
-// check 3 tiles to see if they are the same
-function checkIdSign(val1, val2, val3, sign){ 
-    if(getIdVal(val1) == sign && getIdVal(val2) == sign && getIdVal(val3) == sign){
+
+function checkIdSign(val1, val2, val3, sign) {
+    if (getIdVal(val1) == sign && getIdVal(val2) == sign && getIdVal(val3) == sign) {
         return true;
     }
     return false;
 }
-// check winner
-function selectWinner(){
-    if(checkIdSign(1,2,3,playerSign) || checkIdSign(4,5,6, playerSign) || checkIdSign(7,8,9, playerSign) || checkIdSign(1,4,7, playerSign) || checkIdSign(2,5,8, playerSign) || checkIdSign(3,6,9, playerSign) || checkIdSign(1,5,9, playerSign) || checkIdSign(3,5,7, playerSign)){
+
+function selectWinner() {
+    if (checkIdSign(1, 2, 3, playerSign) || checkIdSign(4, 5, 6, playerSign) || checkIdSign(7, 8, 9, playerSign) || checkIdSign(1, 4, 7, playerSign) || checkIdSign(2, 5, 8, playerSign) || checkIdSign(3, 6, 9, playerSign) || checkIdSign(1, 5, 9, playerSign) || checkIdSign(3, 5, 7, playerSign)) {
         runBot = false;
         bot(runBot);
 
-        // buffer time
-        setTimeout(()=>{
+     
+        if (playerSign === "X") {
+            playerXScore++;
+            playerXScoreDisplay.textContent = playerXScore;
+        } else {
+            playerOScore++;
+            playerOScoreDisplay.textContent = playerOScore;
+        }
+
+        if (playerXScore === 3 || playerOScore === 3) {
             resultBox.classList.add("show");
             playBoard.classList.remove("show");
-        }, 700);
-        wonText.innerHTML = `PLAYER ${playerSign}<br> WINS!`;
-    }
-    else{
-        // if the board is full
-        if(getIdVal(1) != "" && getIdVal(2) != "" && getIdVal(3) != "" && getIdVal(4) != "" && getIdVal(5) != "" && getIdVal(6) != "" && getIdVal(7) != "" && getIdVal(8) != "" && getIdVal(9) != ""){
-            runBot = false;
-            bot(runBot);
-            
-            // buffer time for showing the match has been drawn
-            setTimeout(()=>{
-                resultBox.classList.add("show");
-                playBoard.classList.remove("show");
+            wonText.innerHTML = `PLAYER ${playerSign} WINS!`;
+        } else {
+            setTimeout(() => {
+                clearBoard();
             }, 700);
-            wonText.textContent = "IT'S A DRAW!";
+        }
+    } else {
+        if (getIdVal(1) != "" && getIdVal(2) != "" && getIdVal(3) != "" && getIdVal(4) != "" && getIdVal(5) != "" && getIdVal(6) != "" && getIdVal(7) != "" && getIdVal(8) != "" && getIdVal(9) != "") {
+            setTimeout(() => {
+                clearBoard();
+            }, 700);
         }
     }
 }
 
-// reload page when replay button is clicked
+function clearBoard() {
+    for (let i = 0; i < allBox.length; i++) {
+        allBox[i].innerHTML = '';
+        allBox[i].removeAttribute('id');
+        allBox[i].style.pointerEvents = 'auto';
+    }
+    runBot = true;
+    playerSign = "X";
+    updatePlayerTurn(playerSign);
+    playBoard.style.pointerEvents = 'auto';
+}
+
+
+// reload 
 replayBtn.onclick = () => {
     window.location.reload();
+    
 }
+
